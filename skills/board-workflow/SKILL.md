@@ -5,7 +5,7 @@ description: Work through a GitHub Projects board, one In Progress card at a tim
 
 # Board workflow
 
-The tasks for a project live on its GitHub Projects board (columns: Todo, In Progress, QA, Done). Cards are issues in the project's repo.
+The tasks for a project live on its GitHub Projects board. The usual columns are Todo, In Progress, QA and Done; step 0 maps other names. Cards are issues in the project's repo.
 
 ```
 In Progress column -> pick top card -> execute -> ponytail audit (fix must-fix findings) -> commit -> move to QA + comment -> next card
@@ -13,12 +13,32 @@ In Progress column -> pick top card -> execute -> ponytail audit (fix must-fix f
 
 ## 0. Find the board
 
-Use the first that works:
-1. A board link for this repo in `~/.claude/CLAUDE.md` or in memory.
-2. The repo's GitHub page, under the **Projects** tab, or the "Projects" box on any of its issues.
-3. Ask the user for the link. Then add it to the board list in `~/.claude/CLAUDE.md`.
+The user usually won't say which board. Find it yourself, and ask only when it's truly ambiguous.
 
-**Tools:** if `gh` is installed and authenticated (`gh auth status`), use `gh project item-list`, `gh project item-edit`, `gh issue view` and `gh issue comment`. Otherwise use the browser. Boards are often private, so the browser must be signed in to GitHub. Ask the user to sign in themselves; never type their password.
+**Tools:** if `gh` is installed and authenticated (`gh auth status`), use it for the steps below. Otherwise use the browser. Boards are often private, so the browser must be signed in to GitHub. If it shows a sign-in page or a 404 on a private board, ask the user to sign in in the browser themselves; never type their password.
+
+1. **Which repo is this?** Run `git remote get-url origin` in the project folder and take `<owner>/<repo>` from it. If there's no GitHub remote, ask the user for the board link.
+2. **Saved already?** Look for that `<owner>/<repo>` in the board list in `~/.claude/CLAUDE.md` (or in memory). If it's there, use that link and its column mapping, and skip to step 1 of the workflow.
+3. **Find the boards linked to the repo:**
+   - With `gh`: `gh api graphql -f query='query($o:String!,$r:String!){repository(owner:$o,name:$r){projectsV2(first:20){nodes{title url closed}}}}' -f o=<owner> -f r=<repo>`
+   - Without `gh`: open `https://github.com/<owner>/<repo>/projects`. The list loads after the page does and shows "0" and "Loading" at first, so wait a few seconds and read it again before deciding. If it still lists none, open a few of the repo's recent open issues and read the **Projects** box in each issue's sidebar.
+   - Ignore closed boards.
+4. **Decide:**
+   - **One board:** use it, and tell the user in one line which board you're working from.
+   - **Several boards:** list their names and ask which one is this project's.
+   - **None:** ask the user for the board link.
+5. **Map the columns.** Read the board's **Status** options. Match each workflow stage by meaning, not exact name:
+   - **In Progress:** In Progress, Doing, WIP, Working
+   - **QA:** QA, Testing, In Review, Review, Ready for QA
+   - **Done:** Done, Completed, Closed, Shipped
+   - **Todo:** Todo, Backlog, Ready, To Do
+
+   If In Progress or QA has no clear match, ask the user which status to use. Don't guess where finished work goes.
+6. **Save it** under `## Boards` in `~/.claude/CLAUDE.md` (create the heading if missing), so it's never asked again:
+   `- <repo> (<owner>/<repo>): <board url>`
+   If the column names differ from the defaults, add the mapping on the same line: `| In Progress="Doing", QA="Testing"`.
+
+Everywhere below, **In Progress** and **QA** mean the mapped statuses for this board.
 
 ## 1. Pick up work
 

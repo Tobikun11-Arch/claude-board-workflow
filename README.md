@@ -45,7 +45,7 @@ If you get `'claude' is not recognized`, the CLI isn't installed; the desktop ap
 
 Needs the [ponytail](https://github.com/DietrichGebert/ponytail) plugin for the audit step. If it's missing, Claude asks before installing it.
 
-Tell Claude "do the tasks" or "work the board" in a project. The first time, Claude asks for the board link. Keep a list of boards in `~/.claude/CLAUDE.md` so Claude doesn't have to ask:
+Tell Claude "do the tasks" or "work the board" in a project. You don't have to say which board: Claude reads the repo from `git remote`, finds the GitHub Project linked to it (be signed in to GitHub in Claude's browser, or have `gh` logged in), maps your column names, and saves the board to `~/.claude/CLAUDE.md`. It asks only if the repo has several boards or none. You can also list boards there yourself:
 
 ```
 - my-app (my-org/my-app): https://github.com/users/<user>/projects/<number>/views/1
