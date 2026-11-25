@@ -4,14 +4,11 @@ A Claude Code skill. Claude takes the top card in a GitHub Projects board's **In
 
 ## Install on any PC
 
-Run this in a terminal on that PC:
+Pick one option. Restart Claude afterwards.
 
-```
-claude plugin marketplace add Tobikun11-Arch/claude-board-workflow
-claude plugin install board-workflow@board-workflow
-```
+### Option A: Claude desktop app (no terminal needed)
 
-Or add it to `~/.claude/settings.json`:
+Open `~/.claude/settings.json` (Windows: `C:\Users\<you>\.claude\settings.json`), or create it, and add these entries inside the outer `{ }`. If the file already has `extraKnownMarketplaces` or `enabledPlugins`, add the lines inside those blocks instead.
 
 ```json
 {
@@ -21,6 +18,18 @@ Or add it to `~/.claude/settings.json`:
   "enabledPlugins": { "board-workflow@board-workflow": true }
 }
 ```
+
+### Option B: Claude Code CLI
+
+```
+claude plugin marketplace add Tobikun11-Arch/claude-board-workflow
+claude plugin install board-workflow@board-workflow
+```
+
+If you get `'claude' is not recognized`, the CLI isn't installed; the desktop app doesn't add it. Use Option A, or install the CLI first, then reopen the terminal:
+
+- Windows (PowerShell): `irm https://claude.ai/install.ps1 | iex`
+- macOS / Linux: `curl -fsSL https://claude.ai/install.sh | bash`
 
 ## Use
 
