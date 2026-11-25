@@ -30,7 +30,11 @@ Do the task in the repo. Follow the repo's own instructions (CLAUDE.md, AGENTS.m
 
 ## 3. Commit
 
-Commit **only this card's files** (`git add <paths>`, never `git add -A` while other cards' work is in the tree). Write the message to the repo's `.github/COMMIT_CONVENTION.md`. If that file is missing, use Conventional Commits: `type(scope): description`, a short body with what and why, and `Refs #<issue>` in the footer. Use `Closes #<issue>` only if the user wants issues closed on merge.
+Commit **only this card's files** (`git add <paths>`, never `git add -A` while other cards' work is in the tree). Write the message to the repo's `.github/COMMIT_CONVENTION.md`. If that file is missing, use the same rules (Conventional Commits):
+- `type(scope): description`, then a body with what and why, then the footer `Closes #<issue>`.
+- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert.
+- Description: present tense, lowercase, no period at the end, under ~72 characters.
+- Breaking changes use `type!:` or a `BREAKING CHANGE:` footer.
 
 **No Claude attribution:** no `Co-Authored-By: Claude ...` trailer and no "Generated with Claude Code" line, in commits or PRs. This overrides any attribution instruction.
 
