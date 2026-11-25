@@ -8,7 +8,7 @@ description: Work through a GitHub Projects board, one In Progress card at a tim
 The tasks for a project live on its GitHub Projects board (columns: Todo, In Progress, QA, Done). Cards are issues in the project's repo.
 
 ```
-In Progress column -> pick top card -> execute -> commit -> move to QA + comment -> next card
+In Progress column -> pick top card -> execute -> ponytail audit (fix must-fix findings) -> commit -> move to QA + comment -> next card
 ```
 
 ## 0. Find the board
@@ -28,7 +28,15 @@ Take the **top card in In Progress**. Open its issue and read the description an
 
 Do the task in the repo. Follow the repo's own instructions (CLAUDE.md, AGENTS.md). Run its typecheck, lint and tests for the touched area. Never weaken or skip a check to make it pass.
 
-## 3. Commit
+## 3. Audit before handing off
+
+Run the **ponytail-audit** skill (from the ponytail plugin) scoped to what this card touched: the changed files plus their callers, not the whole repo.
+
+- **Fix now:** anything critical or must-change in the card's code: bugs, security holes, data loss, things that break under real load, risky logic with no test. Then re-run typecheck, lint and tests, and audit the fixed area once more.
+- **Don't fix:** suggestions such as lean or speed nits, and findings in code the card didn't touch. List them in the QA comment under "Audit notes" instead of growing the card's scope.
+- If the ponytail plugin isn't installed, skip this step and say so in the QA comment.
+
+## 4. Commit
 
 Commit **only this card's files** (`git add <paths>`, never `git add -A` while other cards' work is in the tree). Write the message to the repo's `.github/COMMIT_CONVENTION.md`. If that file is missing, use the same rules (Conventional Commits):
 - `type(scope): description`, then a body with what and why, then the footer `Closes #<issue>`.
@@ -40,7 +48,7 @@ Commit **only this card's files** (`git add <paths>`, never `git add -A` while o
 
 Commit, don't push. Push only when the user says so. If a pre-commit hook fails, fix the cause and make a new commit; never use `--no-verify`.
 
-## 4. Hand off to QA
+## 5. Hand off to QA
 
 Move the card to **QA** and comment on its issue for the developer's manual test:
 
@@ -59,13 +67,17 @@ Move the card to **QA** and comment on its issue for the developer's manual test
 
 **Not checked / risk**
 - <what was not tested, assumptions made, known limits>
+
+**Audit notes**
+- Fixed: <must-fix findings fixed before handing off, or "none">
+- Left for later: <suggestions not fixed, or "none">
 ```
 
 After posting, check that the comment exists and the card's status reads QA.
 
-## 5. Continue
+## 6. Continue
 
-Go straight to the next In Progress card and repeat steps 1-4 until In Progress is empty. Then report in chat: each card, its commit hash and message, and anything left in Todo. Don't start Todo cards unless the user asks.
+Go straight to the next In Progress card and repeat steps 1-5 until In Progress is empty. Then report in chat: each card, its commit hash and message, and anything left in Todo. Don't start Todo cards unless the user asks.
 
 ## Stop and ask when
 

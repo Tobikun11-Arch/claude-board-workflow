@@ -1,6 +1,6 @@
 # board-workflow
 
-A Claude Code skill. Claude takes the top card in a GitHub Projects board's **In Progress** column, does it, commits it to the repo's `.github/COMMIT_CONVENTION.md`, moves the card to **QA** with a manual-test comment, then takes the next card until the column is empty.
+A Claude Code skill. Claude takes the top card in a GitHub Projects board's **In Progress** column, does it, runs a ponytail audit on the changed code and fixes must-fix findings, commits it to the repo's `.github/COMMIT_CONVENTION.md`, moves the card to **QA** with a manual-test comment, then takes the next card until the column is empty.
 
 ## Install on any PC
 
@@ -23,6 +23,8 @@ Or add it to `~/.claude/settings.json`:
 ```
 
 ## Use
+
+Needs the [ponytail](https://github.com/DietrichGebert/ponytail) plugin for the audit step (the step is skipped if it is missing).
 
 Tell Claude "do the tasks" or "work the board" in a project. The first time, Claude asks for the board link. Keep a list of boards in `~/.claude/CLAUDE.md` so Claude doesn't have to ask:
 
