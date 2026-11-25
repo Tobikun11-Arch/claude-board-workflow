@@ -6,7 +6,17 @@ A Claude Code skill. Claude takes the top card in a GitHub Projects board's **In
 
 Pick one option. Restart Claude afterwards.
 
-### Option A: Claude desktop app (no terminal needed)
+### Quickest on Windows: one line in Windows Terminal / PowerShell
+
+Works for the desktop app and the CLI; you don't need the `claude` command. It adds the plugin to `~/.claude/settings.json`, keeps all your other settings, and saves a backup as `settings.json.bak`.
+
+```powershell
+irm https://raw.githubusercontent.com/Tobikun11-Arch/claude-board-workflow/main/install.ps1 | iex
+```
+
+You can read [install.ps1](install.ps1) first. It only edits that one file.
+
+### Option A: Claude desktop app, by hand
 
 Open `~/.claude/settings.json` (Windows: `C:\Users\<you>\.claude\settings.json`), or create it, and add these entries inside the outer `{ }`. If the file already has `extraKnownMarketplaces` or `enabledPlugins`, add the lines inside those blocks instead.
 
