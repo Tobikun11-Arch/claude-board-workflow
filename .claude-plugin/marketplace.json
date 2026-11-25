@@ -1,0 +1,11 @@
+{
+  "name": "board-workflow",
+  "owner": { "name": "Joenel Sevellejo" },
+  "plugins": [
+    {
+      "name": "board-workflow",
+      "source": "./",
+      "description": "Work a GitHub Projects board card by card: implement, commit, move to QA with a test comment, repeat."
+    }
+  ]
+}

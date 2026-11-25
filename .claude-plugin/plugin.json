@@ -1,0 +1,5 @@
+{
+  "name": "board-workflow",
+  "version": "1.0.0",
+  "description": "Work a GitHub Projects board card by card: implement, commit to convention, move to QA with a manual-test comment, repeat."
+}
