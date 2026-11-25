@@ -7,7 +7,7 @@ A Claude Code skill. Claude takes the top card in a GitHub Projects board's **In
 Run this in a terminal on that PC:
 
 ```
-claude plugin marketplace add <your-github-user>/claude-board-workflow
+claude plugin marketplace add Tobikun11-Arch/claude-board-workflow
 claude plugin install board-workflow@board-workflow
 ```
 
@@ -16,7 +16,7 @@ Or add it to `~/.claude/settings.json`:
 ```json
 {
   "extraKnownMarketplaces": {
-    "board-workflow": { "source": { "source": "github", "repo": "<your-github-user>/claude-board-workflow" } }
+    "board-workflow": { "source": { "source": "github", "repo": "Tobikun11-Arch/claude-board-workflow" } }
   },
   "enabledPlugins": { "board-workflow@board-workflow": true }
 }
@@ -29,5 +29,5 @@ Needs the [ponytail](https://github.com/DietrichGebert/ponytail) plugin for the 
 Tell Claude "do the tasks" or "work the board" in a project. The first time, Claude asks for the board link. Keep a list of boards in `~/.claude/CLAUDE.md` so Claude doesn't have to ask:
 
 ```
-- clovars (Tobikun11-Arch/clovars): https://github.com/users/Tobikun11-Arch/projects/21/views/1
+- my-app (my-org/my-app): https://github.com/users/<user>/projects/<number>/views/1
 ```
