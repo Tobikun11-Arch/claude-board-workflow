@@ -1,6 +1,6 @@
 # board-workflow
 
-A Claude Code skill. Claude takes the top card in a GitHub Projects board's **In Progress** column, does it, runs a ponytail audit on the changed code and fixes must-fix findings, commits it to the repo's `.github/COMMIT_CONVENTION.md`, moves the card to **QA** with a manual-test comment (each check numbered QA-001, QA-002, …), then takes the next card until the column is empty. When a tester replies "QA-002 failed: …" and moves the card back to In Progress, Claude fixes only the failed checks instead of redoing the task.
+A Claude Code skill. Claude takes the top card in a GitHub Projects board's **In Progress** column, does it, runs a ponytail audit on the changed code and fixes must-fix findings, commits it to the repo's `.github/COMMIT_CONVENTION.md`, moves the card to **QA** with a manual-test comment numbered QA-001 (QA-002 for the next handoff, and so on), then takes the next card until the column is empty. Testers reply with plain comments, no QA number, and move the card back to In Progress. Claude then fixes only what those comments report instead of redoing the task.
 
 ## Install on any PC
 
