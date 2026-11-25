@@ -34,7 +34,9 @@ Run the **ponytail-audit** skill (from the ponytail plugin) scoped to what this 
 
 - **Fix now:** anything critical or must-change in the card's code: bugs, security holes, data loss, things that break under real load, risky logic with no test. Then re-run typecheck, lint and tests, and audit the fixed area once more.
 - **Don't fix:** suggestions such as lean or speed nits, and findings in code the card didn't touch. List them in the QA comment under "Audit notes" instead of growing the card's scope.
-- If the ponytail plugin isn't installed, skip this step and say so in the QA comment.
+- **Ponytail missing?** If the `ponytail-audit` skill isn't available, stop and ask the user for permission to install the ponytail plugin for this workflow. Don't install it without a yes.
+  - **Yes:** if the `claude` CLI works, run `claude plugin marketplace add DietrichGebert/ponytail`, then `claude plugin install ponytail@ponytail`. Otherwise add the marketplace `{"ponytail": {"source": {"source": "github", "repo": "DietrichGebert/ponytail"}}}` under `extraKnownMarketplaces` and `"ponytail@ponytail": true` under `enabledPlugins` in `~/.claude/settings.json`, keeping every existing entry. The plugin loads in the next session, so tell the user to restart Claude, and run the audit for this card after the restart.
+  - **No:** skip the audit for this card and write "Audit skipped: ponytail not installed" in the QA comment.
 
 ## 4. Commit
 

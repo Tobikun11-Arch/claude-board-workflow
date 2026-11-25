@@ -24,7 +24,7 @@ Or add it to `~/.claude/settings.json`:
 
 ## Use
 
-Needs the [ponytail](https://github.com/DietrichGebert/ponytail) plugin for the audit step (the step is skipped if it is missing).
+Needs the [ponytail](https://github.com/DietrichGebert/ponytail) plugin for the audit step. If it's missing, Claude asks before installing it.
 
 Tell Claude "do the tasks" or "work the board" in a project. The first time, Claude asks for the board link. Keep a list of boards in `~/.claude/CLAUDE.md` so Claude doesn't have to ask:
 
