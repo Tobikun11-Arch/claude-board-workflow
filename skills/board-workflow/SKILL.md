@@ -22,7 +22,15 @@ Use the first that works:
 
 ## 1. Pick up work
 
-Take the **top card in In Progress**. Open its issue and read the description and comments. If the card's ask is too vague to build without guessing something that matters (behavior, data loss, money), ask one short question first. Otherwise pick the sensible default and write that choice in the QA comment.
+Take the **top card in In Progress**. Open its issue and read the description and **every comment, oldest to newest**, before writing any code. The comments decide what kind of pickup this is:
+
+- **New card:** there's no earlier "Ready for QA" comment from this workflow. Do the whole task.
+- **Returned from QA (revision):** there's an earlier "Ready for QA" comment, and a tester has since replied with QA IDs, for example `QA-002 failed: the toast never shows`. Treat the card as a **revision**: fix only the QA items reported as failed. The rest of the task is already done and committed, so don't redo it, and don't touch checks that passed or weren't mentioned. If a reply names a QA ID that isn't in the earlier QA comment, ask the user which check it means.
+- **Comments without a QA ID** (from the user or a teammate): treat them as extra instructions or context for this card, such as a new requirement, a clarification or a priority. Follow them alongside the failed items. If one conflicts with the card or a failed item, ask before choosing.
+
+In a revision, the commit (step 4) is a `fix` that names the IDs, for example `fix(timer): show idle toast after auto-pause` with `Fixes QA-002 on #2` in the body. The new QA comment (step 5) re-lists only the fixed IDs, plus new IDs for any new checks.
+
+If the card's ask is too vague to build without guessing something that matters (behavior, data loss, money), ask one short question first. Otherwise pick the sensible default and write that choice in the QA comment.
 
 ## 2. Execute
 
@@ -63,9 +71,11 @@ Move the card to **QA** and comment on its issue for the developer's manual test
 - <file or area>: <what>
 
 **How to check**
-1. <where to go> -> <what to do> -> <what should happen>
-2. ...
+- **QA-001**: <where to go> -> <what to do> -> <what should happen>
+- **QA-002**: ...
 (Say whether the change is only committed locally or also pushed.)
+
+To report a failure, reply with the ID and what happened, for example `QA-002 failed: <what you saw>`, then move the card back to In Progress.
 
 **Not checked / risk**
 - <what was not tested, assumptions made, known limits>
@@ -74,6 +84,11 @@ Move the card to **QA** and comment on its issue for the developer's manual test
 - Fixed: <must-fix findings fixed before handing off, or "none">
 - Left for later: <suggestions not fixed, or "none">
 ```
+
+QA IDs:
+- Each card has its own count that starts at QA-001: one ID per check, zero-padded to 3 digits.
+- A revision QA comment keeps the IDs it re-tests, such as QA-002, and continues the count for new checks, such as QA-004 after QA-003. An ID is never reused for a different check.
+- A revision's title is `## Ready for QA (revision): fixed QA-002, QA-003`.
 
 After posting, check that the comment exists and the card's status reads QA.
 
