@@ -43,7 +43,7 @@ If a `gh` call fails with an auth or scope error partway through, go back to the
 The user usually won't say which board. Find it yourself, and ask only when it's truly ambiguous.
 
 1. **Which repo is this?** Run `git remote get-url origin` in the project folder and take `<owner>/<repo>` from it. If there's no GitHub remote, ask the user for the board link.
-2. **Saved already?** Look for that `<owner>/<repo>` in the board list in `~/.claude/CLAUDE.md` (or in memory). If it's there, use that link and its column mapping, and skip to step 1 of the workflow.
+2. **Saved already?** Look for that `<owner>/<repo>` in the board list in your global instructions file: `~/.claude/CLAUDE.md` in Claude, or your own agent's equivalent elsewhere (OpenCode: `~/.config/opencode/AGENTS.md`). Also check memory if you have it. If it's there, use that link and its column mapping, and skip to step 1 of the workflow.
 3. **Find the boards linked to the repo:**
    - `gh api graphql -f query='query($o:String!,$r:String!){repository(owner:$o,name:$r){projectsV2(first:20){nodes{title url closed}}}}' -f o=<owner> -f r=<repo>`
    - If that lists none, check the boards on a few recent open issues: `gh issue list --repo <owner>/<repo> --limit 5 --json number,projectItems`
@@ -59,7 +59,7 @@ The user usually won't say which board. Find it yourself, and ask only when it's
    - **Todo:** Todo, Backlog, Ready, To Do
 
    If In Progress or QA has no clear match, ask the user which status to use. Don't guess where finished work goes.
-6. **Save it** under `## Boards` in `~/.claude/CLAUDE.md` (create the heading if missing), so it's never asked again:
+6. **Save it** under `## Boards` in that same global instructions file (create the heading if missing), so it's never asked again:
    `- <repo> (<owner>/<repo>): <board url>`
    If the column names differ from the defaults, add the mapping on the same line: `| In Progress="Doing", QA="Testing"`.
 
@@ -92,7 +92,8 @@ Run the **ponytail-audit** skill (from the ponytail plugin) scoped to what this 
 
 - **Fix now:** anything critical or must-change in the card's code: bugs, security holes, data loss, things that break under real load, risky logic with no test. Then re-run typecheck, lint and tests, and audit the fixed area once more.
 - **Don't fix:** suggestions such as lean or speed nits, and findings in code the card didn't touch. List them in the QA comment under "Audit notes" instead of growing the card's scope.
-- **Ponytail missing?** If the `ponytail-audit` skill isn't available, stop and ask the user for permission to install the ponytail plugin for this workflow. Don't install it without a yes.
+- **Not running in Claude?** ponytail is a Claude plugin. In other agents (OpenCode, Codex, …), skip the audit and write "Audit skipped: ponytail is Claude-only" in the QA comment.
+- **Ponytail missing in Claude?** If the `ponytail-audit` skill isn't available, stop and ask the user for permission to install the ponytail plugin for this workflow. Don't install it without a yes.
   - **Yes:** if the `claude` CLI works, run `claude plugin marketplace add DietrichGebert/ponytail`, then `claude plugin install ponytail@ponytail`. Otherwise add the marketplace `{"ponytail": {"source": {"source": "github", "repo": "DietrichGebert/ponytail"}}}` under `extraKnownMarketplaces` and `"ponytail@ponytail": true` under `enabledPlugins` in `~/.claude/settings.json`, keeping every existing entry. The plugin loads in the next session, so tell the user to restart Claude, and run the audit for this card after the restart.
   - **No:** skip the audit for this card and write "Audit skipped: ponytail not installed" in the QA comment.
 

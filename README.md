@@ -41,6 +41,29 @@ If you get `'claude' is not recognized`, the CLI isn't installed; the desktop ap
 - Windows (PowerShell): `irm https://claude.ai/install.ps1 | iex`
 - macOS / Linux: `curl -fsSL https://claude.ai/install.sh | bash`
 
+### Not using Claude? OpenCode, Codex and other agents
+
+The skill is a plain `SKILL.md` file, so any agent that reads skills can use it. This command saves it to `~/.agents/skills/board-workflow/SKILL.md`, a shared folder that OpenCode and other agents check.
+
+Windows (PowerShell):
+
+```powershell
+irm https://raw.githubusercontent.com/Tobikun11-Arch/claude-board-workflow/main/install-skill.ps1 | iex
+```
+
+macOS / Linux:
+
+```
+curl -fsSL https://raw.githubusercontent.com/Tobikun11-Arch/claude-board-workflow/main/install-skill.sh | sh
+```
+
+Restart the agent, then say "do the tasks" in a project. In OpenCode you can also mention `@board-workflow`. If your agent reads skills from a different folder, set `BOARD_WORKFLOW_SKILLS_DIR` to that folder before running the command (PowerShell: `$env:BOARD_WORKFLOW_SKILLS_DIR = "$HOME\.config\opencode\skills"`). You can also copy [SKILL.md](skills/board-workflow/SKILL.md) there by hand.
+
+Outside Claude:
+- **Audit:** ponytail is a Claude plugin, so the agent skips that step and writes "Audit skipped" in the QA comment.
+- **Saved boards:** they go in the agent's own global instructions file (for OpenCode, `~/.config/opencode/AGENTS.md`) instead of `~/.claude/CLAUDE.md`.
+- **Requirements:** `gh` is still required (see below).
+
 ## Use
 
 Needs the [ponytail](https://github.com/DietrichGebert/ponytail) plugin for the audit step. If it's missing, Claude asks before installing it.
