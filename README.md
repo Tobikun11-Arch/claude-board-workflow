@@ -14,6 +14,12 @@ Works for the desktop app and the CLI; you don't need the `claude` command. It a
 irm https://raw.githubusercontent.com/Tobikun11-Arch/claude-board-workflow/main/install.ps1 | iex
 ```
 
+Your prompt should start with `PS C:\...>`. If it's `C:\...>` without `PS`, that's Command Prompt (cmd), where `irm` isn't recognized. Open PowerShell instead, or run this in cmd:
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/Tobikun11-Arch/claude-board-workflow/main/install.ps1 | iex"
+```
+
 You can read [install.ps1](install.ps1) first. It only edits that one file.
 
 ### Option A: Claude desktop app, by hand
@@ -49,6 +55,12 @@ Windows (PowerShell):
 
 ```powershell
 irm https://raw.githubusercontent.com/Tobikun11-Arch/claude-board-workflow/main/install-skill.ps1 | iex
+```
+
+From Command Prompt (cmd):
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/Tobikun11-Arch/claude-board-workflow/main/install-skill.ps1 | iex"
 ```
 
 macOS / Linux:
