@@ -11,17 +11,42 @@ The tasks for a project live on its GitHub Projects board. The usual columns are
 In Progress column -> pick top card -> execute -> ponytail audit (fix must-fix findings) -> commit -> move to QA + comment -> next card
 ```
 
+## Before anything: GitHub CLI check
+
+This workflow uses the GitHub CLI (`gh`) only. **Never use a browser** for the board, issues or comments, not even as a fallback: an agent's browser session is often empty and signed out, so it's unreliable. Run this check at the start of every run, before step 0, and don't touch the board until it passes.
+
+1. **Is `gh` installed?** Run `gh --version`.
+   - If it's missing, stop and ask the user for permission to install it. On a yes: Windows `winget install --id GitHub.cli -e`, macOS `brew install gh`, Linux see https://github.com/cli/cli#installation. On Windows the current shell won't see the new `gh` until it's reopened. Try `& "$env:ProgramFiles\GitHub CLI\gh.exe" --version`. If that fails too, ask the user to restart Claude.
+2. **Is it logged in?** Run `gh auth status`. A non-zero exit or "not logged in" means no.
+   - If it's not logged in, stop and ask the user to log in. Login is interactive, so the user must run it themselves. Give them this command to run in their own terminal, or typed into Claude Code with a leading `!`:
+     `gh auth login --hostname github.com --git-protocol https --web --scopes project`
+     It shows a one-time code and opens github.com to approve it. Never ask for, type or handle their password or token. When they say it's done, run `gh auth status` again.
+3. **Does it have the Projects scope?** In the `gh auth status` output, `Token scopes` must include `'project'`. A normal `gh auth login` doesn't add it, and without it the board queries and card moves fail.
+   - If it's missing, ask the user to run `gh auth refresh --hostname github.com --scopes project`, then check again.
+4. Don't continue until all three pass. If the user won't install or log in, stop and say the workflow needs `gh`.
+
+### gh commands used below
+
+Take `<owner>` and `<number>` from the board URL (`github.com/orgs/<owner>/projects/<number>` or `github.com/users/<owner>/projects/<number>`).
+
+- Board ID: `gh project view <number> --owner <owner> --format json` (use its `id`)
+- Status field and its options: `gh project field-list <number> --owner <owner> --format json` (the field named `Status`: its `id` and each option's `id` and `name`)
+- Cards: `gh project item-list <number> --owner <owner> --format json -L 500`. Each item has its `status`, its `id` (the card) and `content` (the issue number and repo). Keep the returned order as the board's top-to-bottom order.
+- Read an issue and all its comments: `gh issue view <n> --repo <owner>/<repo> --comments`
+- Comment: `gh issue comment <n> --repo <owner>/<repo> --body-file <file>` (write the body to a temp file first so the Markdown stays intact)
+- Move a card: `gh project item-edit --id <item id> --project-id <board id> --field-id <status field id> --single-select-option-id <option id>`
+
+If a `gh` call fails with an auth or scope error partway through, go back to the check above.
+
 ## 0. Find the board
 
 The user usually won't say which board. Find it yourself, and ask only when it's truly ambiguous.
 
-**Tools:** if `gh` is installed and authenticated (`gh auth status`), use it for the steps below. Otherwise use the browser. Boards are often private, so the browser must be signed in to GitHub. If it shows a sign-in page or a 404 on a private board, ask the user to sign in in the browser themselves; never type their password.
-
 1. **Which repo is this?** Run `git remote get-url origin` in the project folder and take `<owner>/<repo>` from it. If there's no GitHub remote, ask the user for the board link.
 2. **Saved already?** Look for that `<owner>/<repo>` in the board list in `~/.claude/CLAUDE.md` (or in memory). If it's there, use that link and its column mapping, and skip to step 1 of the workflow.
 3. **Find the boards linked to the repo:**
-   - With `gh`: `gh api graphql -f query='query($o:String!,$r:String!){repository(owner:$o,name:$r){projectsV2(first:20){nodes{title url closed}}}}' -f o=<owner> -f r=<repo>`
-   - Without `gh`: open `https://github.com/<owner>/<repo>/projects`. The list loads after the page does and shows "0" and "Loading" at first, so wait a few seconds and read it again before deciding. If it still lists none, open a few of the repo's recent open issues and read the **Projects** box in each issue's sidebar.
+   - `gh api graphql -f query='query($o:String!,$r:String!){repository(owner:$o,name:$r){projectsV2(first:20){nodes{title url closed}}}}' -f o=<owner> -f r=<repo>`
+   - If that lists none, check the boards on a few recent open issues: `gh issue list --repo <owner>/<repo> --limit 5 --json number,projectItems`
    - Ignore closed boards.
 4. **Decide:**
    - **One board:** use it, and tell the user in one line which board you're working from.
@@ -123,6 +148,6 @@ Go straight to the next In Progress card and repeat steps 1-5 until In Progress 
 
 ## Stop and ask when
 
-- The board can't be opened, or the user is signed out.
+- `gh` is missing, signed out, or lacks the `project` scope (see the GitHub CLI check), or the board can't be opened with it.
 - Two cards conflict, or a card needs a decision only the user can make.
 - A check fails and the fix would go beyond the card's scope.

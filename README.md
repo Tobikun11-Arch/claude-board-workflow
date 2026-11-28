@@ -45,7 +45,19 @@ If you get `'claude' is not recognized`, the CLI isn't installed; the desktop ap
 
 Needs the [ponytail](https://github.com/DietrichGebert/ponytail) plugin for the audit step. If it's missing, Claude asks before installing it.
 
-Tell Claude "do the tasks" or "work the board" in a project. You don't have to say which board: Claude reads the repo from `git remote`, finds the GitHub Project linked to it (be signed in to GitHub in Claude's browser, or have `gh` logged in), maps your column names, and saves the board to `~/.claude/CLAUDE.md`. It asks only if the repo has several boards or none. You can also list boards there yourself:
+Needs the [GitHub CLI](https://cli.github.com) (`gh`), logged in with the Projects scope. The skill never uses a browser. At the start of every run Claude checks `gh`. If it's missing, Claude asks before installing it. If you're not logged in, or the Projects scope is missing, Claude stops and asks you to run one of these, then checks again:
+
+```powershell
+gh auth login --hostname github.com --git-protocol https --web --scopes project
+```
+
+```powershell
+gh auth refresh --hostname github.com --scopes project
+```
+
+You also need write access to the repo and edit access to the Project, so Claude can comment on issues and move cards.
+
+Tell Claude "do the tasks" or "work the board" in a project. You don't have to say which board: Claude reads the repo from `git remote`, finds the GitHub Project linked to it with `gh`, maps your column names, and saves the board to `~/.claude/CLAUDE.md`. It asks only if the repo has several boards or none. You can also list boards there yourself:
 
 ```
 - my-app (my-org/my-app): https://github.com/users/<user>/projects/<number>/views/1
